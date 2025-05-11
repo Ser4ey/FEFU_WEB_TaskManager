@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import api from '../api';
 
-export default function TaskForm({ onSubmit, initialData = null }) {
+export default function TaskForm({ onSubmit, initialData = null, projectId = null }) {
     const [open, setOpen] = useState(false);
     const [projects, setProjects] = useState([]);
     const [error, setError] = useState(null);
@@ -24,14 +24,16 @@ export default function TaskForm({ onSubmit, initialData = null }) {
         priority: 'medium',
         status: 'in_progress',
         deadline: '',
-        project: ''
+        project: projectId || ''
     });
 
     useEffect(() => {
         if (initialData) {
             setFormData(initialData);
+        } else if (projectId) {
+            setFormData(prev => ({ ...prev, project: projectId }));
         }
-    }, [initialData]);
+    }, [initialData, projectId]);
 
     useEffect(() => {
         const loadProjects = async () => {
@@ -63,7 +65,7 @@ export default function TaskForm({ onSubmit, initialData = null }) {
         const taskData = {
             ...formData,
             project: Number(formData.project),
-            status: formData.status === 'done' ? 'done' : 'in_progress'
+            status: formData.status
         };
         onSubmit(taskData);
         setFormData({
@@ -72,7 +74,7 @@ export default function TaskForm({ onSubmit, initialData = null }) {
             priority: 'medium',
             status: 'in_progress',
             deadline: '',
-            project: ''
+            project: projectId || ''
         });
         setOpen(false);
         setError(null);

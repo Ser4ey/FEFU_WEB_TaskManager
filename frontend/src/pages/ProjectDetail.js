@@ -30,7 +30,7 @@ export default function ProjectDetail() {
     const [editData, setEditData] = useState({
         name: '',
         description: '',
-        visibility: 'private'
+        is_public: false
     });
 
     const loadProject = useCallback(async () => {
@@ -40,7 +40,7 @@ export default function ProjectDetail() {
             setEditData({
                 name: response.data.name,
                 description: response.data.description,
-                visibility: response.data.visibility
+                is_public: response.data.is_public
             });
         } catch (error) {
             console.error('Ошибка при загрузке проекта:', error);
@@ -70,7 +70,7 @@ export default function ProjectDetail() {
         setEditData({
             name: project.name,
             description: project.description,
-            visibility: project.visibility
+            is_public: project.is_public
         });
     };
 
@@ -150,11 +150,11 @@ export default function ProjectDetail() {
                         <FormControl fullWidth margin="normal">
                             <InputLabel>Зона видимости</InputLabel>
                             <Select
-                                value={editData.visibility}
-                                onChange={(e) => setEditData({ ...editData, visibility: e.target.value })}
+                                value={editData.is_public.toString()}
+                                onChange={(e) => setEditData({ ...editData, is_public: e.target.value === 'true' })}
                             >
-                                <MenuItem value="private">Приватный</MenuItem>
-                                <MenuItem value="public">Публичный</MenuItem>
+                                <MenuItem value="false">Приватный</MenuItem>
+                                <MenuItem value="true">Публичный</MenuItem>
                             </Select>
                         </FormControl>
                     </Box>
@@ -178,8 +178,8 @@ export default function ProjectDetail() {
                         <Typography variant="body1" sx={{ mt: 2 }}>
                             {project.description}
                         </Typography>
-                        <Typography variant="body2" sx={{ mt: 2 }}>
-                            Зона видимости: {project.visibility === 'private' ? 'Приватный' : 'Публичный'}
+                        <Typography variant="body2" sx={{ mt: 1 }}>
+                            Зона видимости: {project.is_public ? 'Публичный' : 'Приватный'}
                         </Typography>
                     </Box>
                 )}
@@ -188,7 +188,7 @@ export default function ProjectDetail() {
             <Box sx={{ mt: 4 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
                     <Typography variant="h4">Задачи проекта</Typography>
-                    <TaskForm onSubmit={handleCreateTask} />
+                    <TaskForm onSubmit={handleCreateTask} projectId={id} />
                 </Box>
                 <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                     {tasks.map(task => (

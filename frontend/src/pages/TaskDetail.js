@@ -23,6 +23,7 @@ export default function TaskDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [task, setTask] = useState(null);
+    const [project, setProject] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [editData, setEditData] = useState({
         title: '',
@@ -45,6 +46,10 @@ export default function TaskDetail() {
                 project: response.data.project,
                 deadline: response.data.deadline || ''
             });
+            if (response.data.project) {
+                const projectResponse = await api.projects.getById(response.data.project);
+                setProject(projectResponse.data);
+            }
         } catch (error) {
             console.error('Ошибка при загрузке задачи:', error);
         }
@@ -173,13 +178,26 @@ export default function TaskDetail() {
                         <Typography variant="body1" sx={{ mt: 2 }}>
                             {task.description}
                         </Typography>
-                        <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
+                        <Box sx={{ mt: 2, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                             <Typography variant="body2">
                                 Приоритет: {task.priority === 'low' ? 'Низкий' : task.priority === 'medium' ? 'Средний' : 'Высокий'}
                             </Typography>
                             <Typography variant="body2">
                                 Статус: {task.status === 'in_progress' ? 'В процессе' : 'Выполнено'}
                             </Typography>
+                            {project && (
+                                <Typography 
+                                    variant="body2" 
+                                    sx={{ 
+                                        color: 'primary.main', 
+                                        cursor: 'pointer',
+                                        '&:hover': { textDecoration: 'underline' }
+                                    }}
+                                    onClick={() => navigate(`/projects/${project.id}`)}
+                                >
+                                    Проект: {project.name}
+                                </Typography>
+                            )}
                         </Box>
                     </Box>
                 )}
