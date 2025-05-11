@@ -136,7 +136,7 @@ export default function Navbar() {
                             </Menu>
                         </Box>
                     </Box>
-                ) : !isAuthPage && (
+                ) : !user && (
                     <Box sx={{ display: 'flex', gap: 1 }}>
                         <Button 
                             color="inherit" 
