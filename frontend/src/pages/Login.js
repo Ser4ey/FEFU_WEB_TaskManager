@@ -20,12 +20,19 @@ export default function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(''); // Очищаем предыдущие ошибки
         try {
             const response = await api.auth.login(formData);
             localStorage.setItem('token', response.data.access);
             navigate('/');
         } catch (err) {
-            setError(err.response?.data?.detail || 'Ошибка при входе');
+            if (err.response?.data?.detail) {
+                setError(err.response.data.detail);
+            } else if (err.response?.data?.non_field_errors) {
+                setError(err.response.data.non_field_errors[0]);
+            } else {
+                setError('Ошибка при входе. Проверьте правильность данных.');
+            }
         }
     };
 
