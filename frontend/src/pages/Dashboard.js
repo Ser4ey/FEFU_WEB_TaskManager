@@ -103,7 +103,7 @@ export default function Dashboard() {
                         >
                             <MenuItem value="all">Все статусы</MenuItem>
                             <MenuItem value="in_progress">В процессе</MenuItem>
-                            <MenuItem value="done">Выполнено</MenuItem>
+                            <MenuItem value="completed">Выполнено</MenuItem>
                         </Select>
                     </FormControl>
                 </Box>

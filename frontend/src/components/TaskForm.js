@@ -156,7 +156,7 @@ export default function TaskForm({ onSubmit, initialData = null, projectId = nul
                                 required
                             >
                                 <MenuItem value="in_progress">В процессе</MenuItem>
-                                <MenuItem value="done">Выполнено</MenuItem>
+                                <MenuItem value="completed">Выполнено</MenuItem>
                             </Select>
                         </FormControl>
                         <TextField

@@ -21,7 +21,7 @@ const statusColors = {
 
 const statusLabels = {
     in_progress: 'В процессе',
-    done: 'Выполнено'
+    completed: 'Выполнено'
 };
 
 const chipStyle = {

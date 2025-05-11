@@ -154,7 +154,7 @@ export default function TaskDetail() {
                                 onChange={(e) => setEditData({ ...editData, status: e.target.value })}
                             >
                                 <MenuItem value="in_progress">В процессе</MenuItem>
-                                <MenuItem value="done">Выполнено</MenuItem>
+                                <MenuItem value="completed">Выполнено</MenuItem>
                             </Select>
                         </FormControl>
                     </Box>
