@@ -4,12 +4,17 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from .models import Task
 from .serializers import TaskSerializer
-from .permissions import IsTaskProjectPublicOrMember
+from .permissions import IsTaskProjectPublicOrMember, IsTaskProjectMember
 
 class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated, IsTaskProjectPublicOrMember]
+
+    def get_permissions(self):
+        if self.action in ['update', 'partial_update', 'destroy']:
+            return [IsAuthenticated(), IsTaskProjectMember()]
+        return super().get_permissions()
 
     def get_queryset(self):
         if getattr(self, 'swagger_fake_view', False):
