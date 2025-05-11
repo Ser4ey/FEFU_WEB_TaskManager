@@ -17,13 +17,13 @@ export default function ProjectForm({ onSubmit }) {
     const [formData, setFormData] = useState({
         name: '',
         description: '',
-        visibility: 'private'
+        is_public: false
     });
 
     const handleChange = (e) => {
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.name === 'is_public' ? e.target.value === 'true' : e.target.value
         });
     };
 
@@ -33,7 +33,7 @@ export default function ProjectForm({ onSubmit }) {
         setFormData({
             name: '',
             description: '',
-            visibility: 'private'
+            is_public: false
         });
         setOpen(false);
     };
@@ -72,13 +72,13 @@ export default function ProjectForm({ onSubmit }) {
                         <FormControl fullWidth margin="dense">
                             <InputLabel>Зона видимости</InputLabel>
                             <Select
-                                name="visibility"
-                                value={formData.visibility}
+                                name="is_public"
+                                value={formData.is_public.toString()}
                                 onChange={handleChange}
                                 required
                             >
-                                <MenuItem value="private">Приватный</MenuItem>
-                                <MenuItem value="public">Публичный</MenuItem>
+                                <MenuItem value="false">Приватный</MenuItem>
+                                <MenuItem value="true">Публичный</MenuItem>
                             </Select>
                         </FormControl>
                     </DialogContent>

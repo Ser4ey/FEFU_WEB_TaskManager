@@ -62,7 +62,8 @@ export default function TaskForm({ onSubmit, initialData = null }) {
         }
         const taskData = {
             ...formData,
-            project: Number(formData.project)
+            project: Number(formData.project),
+            status: formData.status === 'done' ? 'done' : 'in_progress'
         };
         onSubmit(taskData);
         setFormData({

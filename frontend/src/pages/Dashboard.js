@@ -11,6 +11,7 @@ export default function Dashboard() {
     const [projects, setProjects] = useState([]);
     const [filter, setFilter] = useState('all');
     const [projectFilter, setProjectFilter] = useState('all');
+    const [statusFilter, setStatusFilter] = useState('all');
 
     useEffect(() => {
         loadData();
@@ -50,7 +51,8 @@ export default function Dashboard() {
     const filteredTasks = tasks.filter(task => {
         const priorityMatch = filter === 'all' || task.priority === filter;
         const projectMatch = projectFilter === 'all' || task.project === Number(projectFilter);
-        return priorityMatch && projectMatch;
+        const statusMatch = statusFilter === 'all' || task.status === statusFilter;
+        return priorityMatch && projectMatch && statusMatch;
     });
 
     return (
@@ -90,6 +92,18 @@ export default function Dashboard() {
                                     {project.name}
                                 </MenuItem>
                             ))}
+                        </Select>
+                    </FormControl>
+                    <FormControl sx={{ minWidth: 200 }}>
+                        <InputLabel>Статус</InputLabel>
+                        <Select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            label="Статус"
+                        >
+                            <MenuItem value="all">Все статусы</MenuItem>
+                            <MenuItem value="in_progress">В процессе</MenuItem>
+                            <MenuItem value="done">Выполнено</MenuItem>
                         </Select>
                     </FormControl>
                 </Box>
