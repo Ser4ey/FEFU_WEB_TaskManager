@@ -18,8 +18,8 @@ class Project(models.Model):
 class ProjectMember(models.Model):
     ROLE_CHOICES = [
         ('admin', 'Admin'),
-        ('member', 'Member'),
-        ('guest', 'Guest'),
+        ('editor', 'Editor'),
+        ('viewer', 'Viewer'),
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)

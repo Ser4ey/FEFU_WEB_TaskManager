@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardContent, Typography, Chip, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import RoleBadge from './RoleBadge';
 
 const priorityColors = {
     low: 'success',
@@ -16,7 +17,7 @@ const priorityLabels = {
 
 const statusColors = {
     in_progress: 'primary',
-    done: 'success'
+    completed: 'success'
 };
 
 const statusLabels = {
@@ -36,6 +37,7 @@ const chipStyle = {
 
 export function TaskCard({ task, project }) {
     const navigate = useNavigate();
+    const userRole = task.current_user_role;
 
     return (
         <Card 
@@ -49,9 +51,12 @@ export function TaskCard({ task, project }) {
             onClick={() => navigate(`/tasks/${task.id}`)}
         >
             <CardContent>
-                <Typography variant="h6" component="div">
-                    {task.title}
-                </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <Typography variant="h6" component="div">
+                        {task.title}
+                    </Typography>
+                    <RoleBadge role={userRole} sx={{ ml: 1 }} />
+                </Box>
                 <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
                     {task.description}
                 </Typography>

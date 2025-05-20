@@ -1,8 +1,11 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, filters
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+from django.contrib.auth import get_user_model
 from .serializers import UserRegistrationSerializer, UserSerializer
+
+User = get_user_model()
 
 # Create your views here.
 
@@ -26,3 +29,21 @@ class UserView(APIView):
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
+
+class UserSearchView(generics.ListAPIView):
+    """
+    Поиск пользователей по имени пользователя для добавления в проект
+    """
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = UserSerializer
+    
+    def get_queryset(self):
+        query = self.request.query_params.get('search', '')
+        if not query:
+            return User.objects.none()
+            
+        # Фильтруем по запросу и исключаем текущего пользователя
+        queryset = User.objects.filter(username__icontains=query).exclude(id=self.request.user.id)
+        
+        # Применяем срез после всех фильтров
+        return queryset[:10]

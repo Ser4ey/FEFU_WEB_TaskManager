@@ -11,7 +11,8 @@ import {
     MenuItem, 
     Paper,
     IconButton,
-    Tooltip
+    Tooltip,
+    Divider
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -19,6 +20,8 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import SaveIcon from '@mui/icons-material/Save';
 import { TaskCard } from '../components/TaskCard';
 import TaskForm from '../components/TaskForm';
+import ProjectMembersManager from '../components/ProjectMembersManager';
+import RoleBadge from '../components/RoleBadge';
 import api from '../api';
 
 export default function ProjectDetail() {
@@ -107,6 +110,9 @@ export default function ProjectDetail() {
         }
     };
 
+    // Проверяем, может ли пользователь редактировать проект
+    const canEdit = project?.current_user_role === 'creator';
+
     if (!project) {
         return <Typography>Загрузка...</Typography>;
     }
@@ -161,19 +167,24 @@ export default function ProjectDetail() {
                 ) : (
                     <Box>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                            <Typography variant="h4">{project.name}</Typography>
-                            <Box sx={{ display: 'flex', gap: 1 }}>
-                                <Tooltip title="Редактировать">
-                                    <IconButton onClick={handleEdit} color="primary">
-                                        <EditIcon />
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip title="Удалить">
-                                    <IconButton onClick={handleDelete} color="error">
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </Tooltip>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                <Typography variant="h4">{project.name}</Typography>
+                                <RoleBadge role={project.current_user_role} />
                             </Box>
+                            {canEdit && (
+                                <Box sx={{ display: 'flex', gap: 1 }}>
+                                    <Tooltip title="Редактировать">
+                                        <IconButton onClick={handleEdit} color="primary">
+                                            <EditIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip title="Удалить">
+                                        <IconButton onClick={handleDelete} color="error">
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                </Box>
+                            )}
                         </Box>
                         <Typography variant="body1" sx={{ mt: 2 }}>
                             {project.description}
@@ -185,15 +196,37 @@ export default function ProjectDetail() {
                 )}
             </Paper>
 
+            {/* Компонент управления участниками проекта - только для публичных проектов */}
+            {project.is_public && (
+                <Paper elevation={3} sx={{ p: 3, mt: 4 }}>
+                    <ProjectMembersManager 
+                        project={project} 
+                        onMembersUpdated={loadProject}
+                        userRole={project.current_user_role}
+                    />
+                </Paper>
+            )}
+
+            <Divider sx={{ my: 4 }} />
+
             <Box sx={{ mt: 4 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
                     <Typography variant="h4">Задачи проекта</Typography>
-                    <TaskForm onSubmit={handleCreateTask} projectId={id} />
+                    {(project.current_user_role === 'creator' || 
+                      project.current_user_role === 'admin' || 
+                      project.current_user_role === 'editor') && (
+                        <TaskForm onSubmit={handleCreateTask} projectId={id} />
+                    )}
                 </Box>
                 <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                     {tasks.map(task => (
                         <TaskCard key={task.id} task={task} project={project} />
                     ))}
+                    {tasks.length === 0 && (
+                        <Typography variant="body1" sx={{ width: '100%', textAlign: 'center', py: 4 }}>
+                            В этом проекте пока нет задач
+                        </Typography>
+                    )}
                 </Box>
             </Box>
         </Container>

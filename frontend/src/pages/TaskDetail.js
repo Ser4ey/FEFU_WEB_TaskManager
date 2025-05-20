@@ -17,6 +17,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SaveIcon from '@mui/icons-material/Save';
+import RoleBadge from '../components/RoleBadge';
 import api from '../api';
 
 export default function TaskDetail() {
@@ -46,9 +47,8 @@ export default function TaskDetail() {
                 project: response.data.project,
                 deadline: response.data.deadline || ''
             });
-            if (response.data.project) {
-                const projectResponse = await api.projects.getById(response.data.project);
-                setProject(projectResponse.data);
+            if (response.data.project_data) {
+                setProject(response.data.project_data);
             }
         } catch (error) {
             console.error('Ошибка при загрузке задачи:', error);
@@ -95,6 +95,11 @@ export default function TaskDetail() {
             }
         }
     };
+
+    // Проверяем, есть ли у пользователя право на редактирование
+    const canEdit = task?.current_user_role === 'creator' || 
+                   task?.current_user_role === 'admin' || 
+                   task?.current_user_role === 'editor';
 
     if (!task) {
         return <Typography>Загрузка...</Typography>;
@@ -161,19 +166,24 @@ export default function TaskDetail() {
                 ) : (
                     <Box>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                            <Typography variant="h4">{task.title}</Typography>
-                            <Box sx={{ display: 'flex', gap: 1 }}>
-                                <Tooltip title="Редактировать">
-                                    <IconButton onClick={handleEdit} color="primary">
-                                        <EditIcon />
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip title="Удалить">
-                                    <IconButton onClick={handleDelete} color="error">
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </Tooltip>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                <Typography variant="h4">{task.title}</Typography>
+                                <RoleBadge role={task.current_user_role} />
                             </Box>
+                            {canEdit && (
+                                <Box sx={{ display: 'flex', gap: 1 }}>
+                                    <Tooltip title="Редактировать">
+                                        <IconButton onClick={handleEdit} color="primary">
+                                            <EditIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip title="Удалить">
+                                        <IconButton onClick={handleDelete} color="error">
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                </Box>
+                            )}
                         </Box>
                         <Typography variant="body1" sx={{ mt: 2 }}>
                             {task.description}

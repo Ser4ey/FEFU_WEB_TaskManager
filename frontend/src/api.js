@@ -37,6 +37,7 @@ export const auth = {
     register: (userData) => api.post('/auth/register/', userData),
     getCurrentUser: () => api.get('/auth/user/'),
     refreshToken: (token) => api.post('/auth/token/refresh/', { refresh: token }),
+    searchUsers: (query) => api.get(`/auth/users/search/?search=${query}`),
 };
 
 export const projects = {
@@ -45,6 +46,8 @@ export const projects = {
     create: (data) => api.post('/projects/', data),
     update: (id, data) => api.put(`/projects/${id}/`, data),
     delete: (id) => api.delete(`/projects/${id}/`),
+    addMember: (projectId, userData) => api.post(`/projects/${projectId}/add_member/`, userData),
+    removeMember: (projectId, userId) => api.post(`/projects/${projectId}/remove_member/`, { user_id: userId }),
 };
 
 export const tasks = {
