@@ -4,6 +4,9 @@ from rest_framework import status
 from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
 from .serializers import UserRegistrationSerializer, UserSerializer
+import logging
+
+logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
@@ -39,11 +42,16 @@ class UserSearchView(generics.ListAPIView):
     
     def get_queryset(self):
         query = self.request.query_params.get('search', '')
+        logger.debug(f"Поисковый запрос: '{query}', длина: {len(query)}")
+        
         if not query:
+            logger.debug("Пустой запрос, возвращаем пустой список")
             return User.objects.none()
             
         # Фильтруем по запросу и исключаем текущего пользователя
         queryset = User.objects.filter(username__icontains=query).exclude(id=self.request.user.id)
+        
+        logger.debug(f"Найдено {queryset.count()} пользователей")
         
         # Применяем срез после всех фильтров
         return queryset[:10]
