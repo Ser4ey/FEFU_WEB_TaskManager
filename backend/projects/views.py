@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.db import models
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -7,29 +6,27 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Project, ProjectMember
 from .serializers import ProjectSerializer, ProjectMemberSerializer
 from .permissions import IsProjectCreator, IsProjectPublicOrMember, IsProjectAdmin
+from backend.views import BaseModelViewSet
 
-class ProjectViewSet(viewsets.ModelViewSet):
+class ProjectViewSet(BaseModelViewSet):
     serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated, IsProjectPublicOrMember]
-
-    def get_queryset(self):
-        if getattr(self, 'swagger_fake_view', False):
-            return Project.objects.none()
-            
-        user = self.request.user
-        if user.is_anonymous:
-            return Project.objects.filter(is_public=True)
-            
-        return Project.objects.filter(
-            models.Q(creator=user) |
-            models.Q(members=user) |
-            models.Q(is_public=True)
-        ).distinct()
+    model = Project
 
     def get_permissions(self):
         if self.action in ['update', 'partial_update', 'destroy']:
             return [IsAuthenticated(), IsProjectCreator()]
         return super().get_permissions()
+        
+    def get_public_queryset(self):
+        return Project.objects.filter(is_public=True)
+        
+    def get_authenticated_queryset(self, user):
+        return Project.objects.filter(
+            models.Q(creator=user) |
+            models.Q(members=user) |
+            models.Q(is_public=True)
+        ).distinct()
 
     @action(detail=True, methods=['post'])
     def add_member(self, request, pk=None):

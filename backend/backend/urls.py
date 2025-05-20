@@ -28,7 +28,7 @@ from rest_framework_simplejwt.views import (
 )
 
 router = SimpleRouter()
-router.register('tasks', TaskViewSet)
+router.register('tasks', TaskViewSet, basename='task')
 router.register('projects', ProjectViewSet, basename='project')
 
 schema_view = get_schema_view(

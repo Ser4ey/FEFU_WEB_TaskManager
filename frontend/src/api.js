@@ -55,8 +55,4 @@ export const tasks = {
     delete: (id) => api.delete(`/tasks/${id}/`),
 };
 
-export default {
-    auth,
-    projects,
-    tasks,
-}; 
+export default { auth, projects, tasks }; 

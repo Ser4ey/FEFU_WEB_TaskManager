@@ -1,6 +1,5 @@
 from django.db import models
-
-from django.db import models
+from django.utils import timezone
 from projects.models import Project
 
 class Task(models.Model):
@@ -15,7 +14,7 @@ class Task(models.Model):
     ]
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    deadline = models.DateTimeField()
+    deadline = models.DateTimeField(default=timezone.now)
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES)
     status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='in_progress')
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks')

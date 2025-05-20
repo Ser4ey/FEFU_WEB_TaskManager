@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework import status
@@ -6,18 +5,6 @@ from rest_framework.views import APIView
 from .serializers import UserRegistrationSerializer, UserSerializer
 
 # Create your views here.
-from django.contrib.auth.forms import UserCreationForm
-from django.http import JsonResponse
-
-def register(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return JsonResponse({'success': True})
-        else:
-            return JsonResponse({'errors': form.errors}, status=400)
-    return JsonResponse({'method': 'POST required'}, status=405)
 
 class RegisterView(generics.CreateAPIView):
     permission_classes = (permissions.AllowAny,)
