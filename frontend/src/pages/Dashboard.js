@@ -12,6 +12,7 @@ export default function Dashboard() {
     const [filter, setFilter] = useState('all');
     const [projectFilter, setProjectFilter] = useState('all');
     const [statusFilter, setStatusFilter] = useState('all');
+    const [deadlineSort, setDeadlineSort] = useState('urgent'); // urgent, later, default
 
     useEffect(() => {
         loadData();
@@ -55,6 +56,27 @@ export default function Dashboard() {
         return priorityMatch && projectMatch && statusMatch;
     });
 
+    // Сортировка задач по дедлайну с учетом выбранного режима сортировки
+    const sortedTasks = [...filteredTasks].sort((a, b) => {
+        if (deadlineSort === 'default') {
+            // Без сортировки, возвращаем исходный порядок
+            return 0;
+        }
+        
+        // Задачи без дедлайна размещаем в конце списка
+        if (!a.deadline) return 1;
+        if (!b.deadline) return -1;
+        
+        // Сортировка по дедлайну
+        if (deadlineSort === 'urgent') {
+            // От ближайшего к дальнему (сначала срочные)
+            return new Date(a.deadline) - new Date(b.deadline);
+        } else {
+            // От дальнего к ближайшему (сначала несрочные)
+            return new Date(b.deadline) - new Date(a.deadline);
+        }
+    });
+
     return (
         <Container>
             <Box sx={{ mt: 4 }}>
@@ -72,7 +94,7 @@ export default function Dashboard() {
                     <Typography variant="h4">Задачи</Typography>
                     <TaskForm onSubmit={handleCreateTask} />
                 </Box>
-                <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
                     <ButtonGroup variant="contained">
                         <Button onClick={() => setFilter('all')}>Все</Button>
                         <Button onClick={() => setFilter('low')}>Низкий</Button>
@@ -106,9 +128,21 @@ export default function Dashboard() {
                             <MenuItem value="completed">Выполнено</MenuItem>
                         </Select>
                     </FormControl>
+                    <FormControl sx={{ minWidth: 220 }}>
+                        <InputLabel>Сортировка по дедлайну</InputLabel>
+                        <Select
+                            value={deadlineSort}
+                            onChange={(e) => setDeadlineSort(e.target.value)}
+                            label="Сортировка по дедлайну"
+                        >
+                            <MenuItem value="default">По умолчанию</MenuItem>
+                            <MenuItem value="urgent">Сначала срочные</MenuItem>
+                            <MenuItem value="later">Сначала несрочные</MenuItem>
+                        </Select>
+                    </FormControl>
                 </Box>
                 <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                    {filteredTasks.map(task => (
+                    {sortedTasks.map(task => (
                         <TaskCard key={task.id} task={task} project={projects.find(p => p.id === task.project)} />
                     ))}
                 </Box>
