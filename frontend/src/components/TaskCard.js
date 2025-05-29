@@ -88,7 +88,7 @@ export function TaskCard({ task, project }) {
                 </Box>
                 {task.deadline && (
                     <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
-                        Дедлайн: {new Date(task.deadline).toLocaleString()}
+                        Дедлайн: {task.deadline ? task.deadline.substring(0, 16).replace('T', ' ') : ''}
                     </Typography>
                 )}
             </CardContent>
