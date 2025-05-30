@@ -6,6 +6,9 @@ from .email_service import EmailService
 import os
 from dotenv import load_dotenv
 
+
+
+
 def load_data_from_env():
     load_dotenv()
 
@@ -18,6 +21,7 @@ def load_data_from_env():
 
 
 def check_deadlines():
+    notified_tasks = set()
     smtp_host, smtp_port, smtp_user, smtp_password = load_data_from_env()
     use_tls = True # Set to False if your server does not use TLS
 
@@ -27,20 +31,44 @@ def check_deadlines():
     email_service.send_email("your_test_email@domain.com", "Тест", "Проверка SMTP", "31 мая 2025")
 
     while True:
+        print("iteration")
         now = datetime.now()
         upcoming_tasks = Task.objects.filter(
             deadline__gte=now,
             deadline__lte=now + timedelta(days=1)
         )
+        print(upcoming_tasks)
         for task in upcoming_tasks:
-            # ... existing code ...
-            print(f"⚠️ Задача '{task.title}' истекает {task.deadline} (Пользователь: {task.project.creator.username}, Email: {task.project.creator.email}), дедлайн:{task.deadline}")
-
-            # Send email notification
+            task_status = task.status
             user_email = task.project.creator.email
             username = task.project.creator.username
             task_title = task.title
             task_time = task.deadline
+
+
+
+
+            if task_status != 'in_progress':
+                continue
+            email_fingerprint = (task_status, user_email, username, task_title, task_time)
+
+            print(email_fingerprint)
+            print(notified_tasks)
+            print("принттт")
+
+            if email_fingerprint in notified_tasks:
+                continue
+            else:
+                notified_tasks.add(email_fingerprint)
+
+            print(f"⚠️ Задача '{task.title}' истекает {task.deadline} (Пользователь: {task.project.creator.username}, Email: {task.project.creator.email}), дедлайн:{task.deadline}")
+
+            # Send email notification
+
+
+
             email_service.send_email(user_email, username, task_title, task_time)
 
-        time.sleep(3600)  # Проверять каждые 60 минут
+
+
+        time.sleep(20)  # Проверять каждые 60 минут
