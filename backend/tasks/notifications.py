@@ -3,13 +3,22 @@ import time
 from datetime import datetime, timedelta
 from .models import Task
 from .email_service import EmailService
+import os
+from dotenv import load_dotenv
+
+def load_data_from_env():
+    load_dotenv()
+
+    smtp_host = str(os.getenv("smtp_host"))
+    smtp_port = str(os.getenv("smtp_port"))
+    smtp_user = str(os.getenv("smtp_user"))
+    smtp_password = str(os.getenv("smtp_password"))
+
+    return smtp_host, smtp_port, smtp_user, smtp_password
+
 
 def check_deadlines():
-    # Configure your SMTP server details here
-    smtp_host = "smtp.gmail.com"
-    smtp_port = 587 # or your SMTP port
-    smtp_user = "gusuevon43@gmail.com" # Optional: your email address
-    smtp_password = "xozi gwlr dbwm uuqo" # Optional: your email password
+    smtp_host, smtp_port, smtp_user, smtp_password = load_data_from_env()
     use_tls = True # Set to False if your server does not use TLS
 
     # Create an instance of the EmailService
@@ -25,13 +34,13 @@ def check_deadlines():
         )
         for task in upcoming_tasks:
             # ... existing code ...
-            print(f"⚠️ Задача '{task.title}' истекает {task.deadline} (Пользователь: {task.project.creator.username}, Email: {task.project.creator.email})")
+            print(f"⚠️ Задача '{task.title}' истекает {task.deadline} (Пользователь: {task.project.creator.username}, Email: {task.project.creator.email}), дедлайн:{task.deadline}")
 
             # Send email notification
             user_email = task.project.creator.email
             username = task.project.creator.username
             task_title = task.title
-            task_time = 12
+            task_time = task.deadline
             email_service.send_email(user_email, username, task_title, task_time)
 
         time.sleep(3600)  # Проверять каждые 60 минут
