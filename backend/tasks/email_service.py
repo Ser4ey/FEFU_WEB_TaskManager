@@ -1,5 +1,6 @@
 from email.mime.text import MIMEText
 import smtplib
+from pytz import timezone
 
 
 class EmailService:
@@ -13,11 +14,16 @@ class EmailService:
     def send_email(self, user_email, username, task_title, task_time):
         sender_email = self.username if self.username else "noreply@yourdomain.com"
         receiver_email = user_email
+
+        vladivostok_tz = timezone("Asia/Vladivostok")
+        local_time = task_time.astimezone(vladivostok_tz)
+        formatted_time = local_time.strftime("%d.%m.%Y %H:%M")
+
         subject = "Уведомление о задаче"
         body = (
             f"Привет, {username}!\n\n"
             f"Это напоминание о задаче: '{task_title}'.\n"
-            f"Дедлайн: {task_time}.\n\n"
+            f"Дедлайн: {formatted_time}.\n\n"
             f"Хорошего дня!"
         )
 

@@ -5,6 +5,7 @@ from .models import Task
 from .email_service import EmailService
 import os
 from dotenv import load_dotenv
+from django.utils import timezone
 
 
 
@@ -23,7 +24,7 @@ def load_data_from_env():
 def check_deadlines():
     notified_tasks = set()
     smtp_host, smtp_port, smtp_user, smtp_password = load_data_from_env()
-    use_tls = True # Set to False if your server does not use TLS
+    use_tls = True
 
     # Create an instance of the EmailService
     email_service = EmailService(smtp_host, smtp_port, smtp_user, smtp_password, use_tls)
@@ -31,13 +32,13 @@ def check_deadlines():
     #email_service.send_email("test@domain.com", "Тест", "Проверка SMTP", "25 мая 2025")
 
     while True:
-        print("iteration")
-        now = datetime.now()
-        upcoming_tasks = Task.objects.filter(
-            deadline__gte=now,
-            deadline__lte=now + timedelta(days=1)
-        )
+        #print("iteration")
+        now = timezone.now()
+        upcoming_tasks = Task.objects.filter(deadline__gte=now, status='in_progress')
         print(upcoming_tasks)
+
+        print("Время сейчас UTC:", now)
+
         for task in upcoming_tasks:
             task_status = task.status
             user_email = task.project.creator.email
@@ -45,30 +46,34 @@ def check_deadlines():
             task_title = task.title
             task_time = task.deadline
 
+            delta = task_time - now
+
+            print(f"Deadline (UTC): {task_time}")
+
+            #За неделю
+            if timedelta(days=6, hours=23, minutes=59) <= delta <= timedelta(days=7, minutes=1):
+                key = (task.id, '7d')
+                if key not in notified_tasks:
+                    notified_tasks.add(key)
+                    print(f"📅 Напоминание за 7 дней: {task_title}")
+                    email_service.send_email(user_email, username, task_title, task_time)
+
+            #за 1 день
+            elif timedelta(hours=23, minutes=59) <= delta <= timedelta(days=1, minutes=1):
+                key = (task.id, '1d')
+                if key not in notified_tasks:
+                    notified_tasks.add(key)
+                    print(f"📅 Напоминание за 1 день: {task_title}")
+                    email_service.send_email(user_email, username, task_title, task_time)
+
+            #за 6 часов
+            elif timedelta(hours=5, minutes=59) <= delta <= timedelta(hours=6, minutes=1):
+                key = (task.id, '6h')
+                if key not in notified_tasks:
+                    notified_tasks.add(key)
+                    print(f"⏰ Напоминание за 6 часов: {task_title}")
+                    email_service.send_email(user_email, username, task_title, task_time)
 
 
 
-            if task_status != 'in_progress':
-                continue
-            email_fingerprint = (task_status, user_email, username, task_title, task_time)
-
-            print(email_fingerprint)
-            print(notified_tasks)
-            print("принттт")
-
-            if email_fingerprint in notified_tasks:
-                continue
-            else:
-                notified_tasks.add(email_fingerprint)
-
-            print(f"⚠️ Задача '{task.title}' истекает {task.deadline} (Пользователь: {task.project.creator.username}, Email: {task.project.creator.email}), дедлайн:{task.deadline}")
-
-            # Send email notification
-
-
-
-            email_service.send_email(user_email, username, task_title, task_time)
-
-
-
-        time.sleep(20)  # Проверять каждые 60 минут
+        time.sleep(60)  # Проверять каждые 60 минут
