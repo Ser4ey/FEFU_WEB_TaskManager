@@ -28,7 +28,7 @@ def check_deadlines():
     # Create an instance of the EmailService
     email_service = EmailService(smtp_host, smtp_port, smtp_user, smtp_password, use_tls)
 
-    email_service.send_email("your_test_email@domain.com", "Тест", "Проверка SMTP", "31 мая 2025")
+    #email_service.send_email("test@domain.com", "Тест", "Проверка SMTP", "25 мая 2025")
 
     while True:
         print("iteration")
