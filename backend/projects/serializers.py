@@ -46,7 +46,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         if obj.creator == user:
             return 'creator'
             
-        #находим запись ProjectMember для пользователя
+        #находим запись ProjectMember пользователя
         try:
             member = obj.projectmember_set.get(user=user)
             return member.role
