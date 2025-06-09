@@ -52,7 +52,16 @@ export function TaskCard({ task, project }) {
         >
             <CardContent>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <Typography variant="h6" component="div">
+                    <Typography 
+                        variant="h6" 
+                        component="div"
+                        sx={{
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            maxWidth: 300 // тут можно поменять сколько симвоолов текста будет отображаться до ...
+                        }}
+                    >
                         {task.title}
                     </Typography>
                     <RoleBadge role={userRole} sx={{ ml: 1 }} />

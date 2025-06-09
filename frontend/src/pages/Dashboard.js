@@ -78,7 +78,7 @@ export default function Dashboard() {
     });
 
     return (
-        <Container>
+        <Container sx={{ pb: 6 }}>
             <Box sx={{ mt: 4 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
                     <Typography variant="h4">Проекты</Typography>

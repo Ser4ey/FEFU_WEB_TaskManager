@@ -188,27 +188,30 @@ export default function TaskDetail() {
                         <Typography variant="body1" sx={{ mt: 2 }}>
                             {task.description}
                         </Typography>
-                        <Box sx={{ mt: 2, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                            <Typography variant="body2">
-                                Приоритет: {task.priority === 'low' ? 'Низкий' : task.priority === 'medium' ? 'Средний' : 'Высокий'}
+                        <Typography variant="body2">
+                            Приоритет: {task.priority === 'low' ? 'Низкий' : task.priority === 'medium' ? 'Средний' : 'Высокий'}
+                        </Typography>
+                        <Typography variant="body2">
+                            Статус: {task.status === 'in_progress' ? 'В процессе' : 'Выполнено'}
+                        </Typography>
+                        {task.deadline && (
+                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                                Дедлайн: {task.deadline.substring(0, 16).replace('T', ' ')}
                             </Typography>
-                            <Typography variant="body2">
-                                Статус: {task.status === 'in_progress' ? 'В процессе' : 'Выполнено'}
+                        )}
+                        {project && (
+                            <Typography 
+                                variant="body2" 
+                                sx={{ 
+                                    color: 'primary.main', 
+                                    cursor: 'pointer',
+                                    '&:hover': { textDecoration: 'underline' }
+                                }}
+                                onClick={() => navigate(`/projects/${project.id}`)}
+                            >
+                                Проект: {project.name}
                             </Typography>
-                            {project && (
-                                <Typography 
-                                    variant="body2" 
-                                    sx={{ 
-                                        color: 'primary.main', 
-                                        cursor: 'pointer',
-                                        '&:hover': { textDecoration: 'underline' }
-                                    }}
-                                    onClick={() => navigate(`/projects/${project.id}`)}
-                                >
-                                    Проект: {project.name}
-                                </Typography>
-                            )}
-                        </Box>
+                        )}
                     </Box>
                 )}
             </Paper>
