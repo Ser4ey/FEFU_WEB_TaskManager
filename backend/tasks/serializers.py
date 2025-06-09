@@ -14,9 +14,7 @@ class TaskSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'created_at', 'current_user_role')
 
     def get_current_user_role(self, obj):
-        """
-        Возвращает роль текущего пользователя в проекте, к которому относится задача
-        """
+        #возвращает роль текущего пользователя в проекте, к которому относится задача
         request = self.context.get('request')
         if not request or not request.user.is_authenticated:
             return None
@@ -24,11 +22,11 @@ class TaskSerializer(serializers.ModelSerializer):
         user = request.user
         project = obj.project
         
-        # Если пользователь - создатель проекта
+        #если пользователь - создатель проекта
         if project.creator == user:
             return 'creator'
             
-        # Пытаемся найти запись ProjectMember для пользователя
+        #находим запись ProjectMember для пользователя
         try:
             member = project.projectmember_set.get(user=user)
             return member.role

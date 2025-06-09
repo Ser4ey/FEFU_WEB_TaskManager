@@ -110,7 +110,7 @@ export default function ProjectDetail() {
         }
     };
 
-    // Проверяем, может ли пользователь редактировать проект
+    //проверяем, может ли пользователь редактировать проект
     const canEdit = project?.current_user_role === 'creator';
 
     if (!project) {

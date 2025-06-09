@@ -12,13 +12,13 @@ class ProjectMemberSerializer(serializers.ModelSerializer):
         read_only_fields = ('id',)
 
     def create(self, validated_data):
-        # Извлекаем user_id из validated_data и получаем объект User
+        #извлекаем user_id из validated_data и получаем объект User
         user_id = validated_data.pop('user_id')
         from django.contrib.auth import get_user_model
         User = get_user_model()
         user = User.objects.get(id=user_id)
         
-        # Создаем объект ProjectMember
+        #создаем объект ProjectMember
         return ProjectMember.objects.create(
             user=user,
             **validated_data
@@ -35,20 +35,18 @@ class ProjectSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'creator', 'created_at', 'current_user_role')
 
     def get_current_user_role(self, obj):
-        """
-        Возвращает роль текущего пользователя в проекте
-        """
+        #возвращает роль текущего пользователя в проекте
         request = self.context.get('request')
         if not request or not request.user.is_authenticated:
             return None
             
         user = request.user
         
-        # Если пользователь - создатель проекта
+        #если пользователь - создатель проекта
         if obj.creator == user:
             return 'creator'
             
-        # Пытаемся найти запись ProjectMember для пользователя
+        #находим запись ProjectMember для пользователя
         try:
             member = obj.projectmember_set.get(user=user)
             return member.role
@@ -58,7 +56,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['creator'] = self.context['request'].user
         project = super().create(validated_data)
-        # Автоматически добавляем создателя как админа
+        #автоматически добавляем создателя как админа
         ProjectMember.objects.create(
             user=self.context['request'].user,
             project=project,

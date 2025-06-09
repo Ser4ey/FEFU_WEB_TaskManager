@@ -56,23 +56,23 @@ export default function Dashboard() {
         return priorityMatch && projectMatch && statusMatch;
     });
 
-    // Сортировка задач по дедлайну с учетом выбранного режима сортировки
+    //сортировка задач по дедлайну с учетом выбранного режима сортировки
     const sortedTasks = [...filteredTasks].sort((a, b) => {
         if (deadlineSort === 'default') {
-            // Без сортировки, возвращаем исходный порядок
+            //без сортировки, возвращаем исходный порядок
             return 0;
         }
         
-        // Задачи без дедлайна размещаем в конце списка
+        //задачи без дедлайна размещаем в конце списка
         if (!a.deadline) return 1;
         if (!b.deadline) return -1;
         
-        // Сортировка по дедлайну
+        //сортировка по дедлайну
         if (deadlineSort === 'urgent') {
-            // От ближайшего к дальнему (сначала срочные)
+            //сначала срочные
             return new Date(a.deadline) - new Date(b.deadline);
         } else {
-            // От дальнего к ближайшему (сначала несрочные)
+            //сначала несрочные
             return new Date(b.deadline) - new Date(a.deadline);
         }
     });

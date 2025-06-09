@@ -11,7 +11,7 @@ class TasksConfig(AppConfig):
         if 'runserver' not in sys.argv:
             return  # чтобы чек дедлайнс не работал при создании миграций (т.к. он пытается ссылаться на бд, которой может еще не быть)
 
-        # чтобы письмо не отправлялось дважды
+        #чтобы письмо не отправлялось дважды
         if os.environ.get('RUN_MAIN') != 'true':
             return
 

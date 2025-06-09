@@ -7,7 +7,7 @@ import {
     Person as CreatorIcon 
 } from '@mui/icons-material';
 
-// Конфигурация для разных типов ролей
+//конфигурация для разных типов ролей
 const ROLE_CONFIG = {
     creator: {
         label: 'Создатель',
@@ -35,13 +35,9 @@ const ROLE_CONFIG = {
     }
 };
 
-/**
- * Компонент для отображения роли пользователя в виде бейджа
- * @param {string} role - Роль пользователя ('creator', 'admin', 'editor', 'viewer')
- * @param {object} sx - Дополнительные стили для компонента
- */
+//показывает бейдж роли пользователя
 function RoleBadge({ role, sx = {} }) {
-    // Если роль не указана или неизвестна, не отображаем бейдж
+    //если роль не указана или неизвестна, не отображаем бейдж
     if (!role || !ROLE_CONFIG[role]) {
         return null;
     }

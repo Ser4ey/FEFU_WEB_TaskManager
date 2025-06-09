@@ -22,7 +22,7 @@ class ProjectViewSet(BaseModelViewSet):
         return super().get_permissions()
         
     def get_public_queryset(self):
-        # Теперь только участники могут видеть публичные проекты
+        #только участники могут видеть публичные проекты
         user = self.request.user
         return Project.objects.filter(
             is_public=True,
@@ -30,7 +30,7 @@ class ProjectViewSet(BaseModelViewSet):
         )
         
     def get_authenticated_queryset(self, user):
-        # Пользователь может видеть только свои проекты или проекты, в которых он участник
+        #пользователь может видеть только свои проекты или проекты, в которых он участник
         return Project.objects.filter(
             models.Q(creator=user) |
             models.Q(members=user)
@@ -45,7 +45,7 @@ class ProjectViewSet(BaseModelViewSet):
                 status=status.HTTP_403_FORBIDDEN
             )
 
-        # Проверяем, передан ли user_id и role
+        #проверяем передан ли user_id и role
         user_id = request.data.get('user_id')
         role = request.data.get('role')
         
@@ -55,7 +55,7 @@ class ProjectViewSet(BaseModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
             
-        # Проверяем, существует ли пользователь
+        #проверяем, существует ли пользователь
         try:
             user = User.objects.get(id=user_id)
         except User.DoesNotExist:
@@ -64,14 +64,14 @@ class ProjectViewSet(BaseModelViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
             
-        # Проверяем, не пытается ли пользователь изменить роль создателя
+        #проверяем, не пытается ли пользователь изменить роль создателя
         if user == project.creator and role != 'admin':
             return Response(
                 {"detail": "Нельзя изменить роль создателя проекта"},
                 status=status.HTTP_400_BAD_REQUEST
             )
             
-        # Создаем или обновляем участника
+        #создаем или обновляем участника
         project_member, created = ProjectMember.objects.update_or_create(
             project=project,
             user=user,
@@ -98,7 +98,7 @@ class ProjectViewSet(BaseModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
             
-        # Проверяем, не пытается ли пользователь удалить создателя
+        #проверяем, не пытается ли пользователь удалить создателя
         try:
             user = User.objects.get(id=user_id)
             if user == project.creator:

@@ -7,7 +7,7 @@ const api = axios.create({
     },
 });
 
-// Добавляем перехватчик для добавления токена к запросам
+//добавляем перехватчик для добавления токена к запросам
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
@@ -21,7 +21,7 @@ api.interceptors.request.use(
     }
 );
 
-// Добавляем перехватчик для обработки ошибок
+//добавляем перехватчик для обработки ошибок
 api.interceptors.response.use(
     (response) => response,
     (error) => {

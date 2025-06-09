@@ -9,7 +9,6 @@ export const AuthProvider = ({ children }) => {
     const login = (token) => {
         localStorage.setItem('token', token);
         setToken(token);
-        // Можно добавить запрос к /api/users/me для получения данных пользователя
     };
 
     const logout = () => {

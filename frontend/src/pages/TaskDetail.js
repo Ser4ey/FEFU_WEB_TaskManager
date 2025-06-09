@@ -96,7 +96,7 @@ export default function TaskDetail() {
         }
     };
 
-    // Проверяем, есть ли у пользователя право на редактирование
+    //проверяем, есть ли у пользователя право на редактирование
     const canEdit = task?.current_user_role === 'creator' || 
                    task?.current_user_role === 'admin' || 
                    task?.current_user_role === 'editor';

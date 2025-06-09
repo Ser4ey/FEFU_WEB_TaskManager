@@ -55,7 +55,7 @@ def check_deadlines():
                 key = (task.id, '7d')
                 if key not in notified_tasks:
                     notified_tasks.add(key)
-                    print(f"📅 Напоминание за 7 дней: {task_title}")
+                    print(f"напоминание за 7 дней: {task_title}")
                     email_service.send_email(user_email, username, task_title, task_time)
 
             #за 1 день
@@ -63,7 +63,7 @@ def check_deadlines():
                 key = (task.id, '1d')
                 if key not in notified_tasks:
                     notified_tasks.add(key)
-                    print(f"📅 Напоминание за 1 день: {task_title}")
+                    print(f"напоминание за 1 день: {task_title}")
                     email_service.send_email(user_email, username, task_title, task_time)
 
             #за 6 часов
@@ -71,9 +71,9 @@ def check_deadlines():
                 key = (task.id, '6h')
                 if key not in notified_tasks:
                     notified_tasks.add(key)
-                    print(f"⏰ Напоминание за 6 часов: {task_title}")
+                    print(f"напоминание за 6 часов: {task_title}")
                     email_service.send_email(user_email, username, task_title, task_time)
 
 
 
-        time.sleep(60)  # Проверять каждые 60 минут
+        time.sleep(60)
