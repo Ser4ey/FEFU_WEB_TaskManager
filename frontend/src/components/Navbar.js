@@ -25,7 +25,7 @@ export default function Navbar() {
 
     useEffect(() => {
         const loadUser = async () => {
-            // Не загружаем информацию о пользователе на страницах входа и регистрации
+            //не загружаем информацию о пользователе на страницах входа и регистрации
             if (location.pathname === '/login' || location.pathname === '/register') {
                 return;
             }
@@ -64,7 +64,7 @@ export default function Navbar() {
         navigate('/login');
     };
 
-    // Определяем, находимся ли мы на странице входа или регистрации
+    //определяем находимся ли мы на странице входа или регистрации
     const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
 
     return (

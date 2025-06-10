@@ -162,11 +162,10 @@ function ProjectMembersManager({ project, onMembersUpdated, userRole }) {
             }
         } catch (err) {
             console.error(err);
-            // Можно добавить уведомление об ошибке
         }
     };
 
-    // Проверяем, может ли пользователь управлять правами доступа
+    //проверяем, может ли пользователь управлять правами доступа
     const canManageAccess = userRole === 'creator' || userRole === 'admin';
 
     return (
@@ -208,7 +207,6 @@ function ProjectMembersManager({ project, onMembersUpdated, userRole }) {
                                 </TableCell>
                                 {canManageAccess && (
                                     <TableCell align="right">
-                                        {/* Не показываем кнопки для создателя проекта */}
                                         {project.creator.id !== member.user.id && (
                                             <>
                                                 <Tooltip title="Изменить роль">
@@ -244,7 +242,7 @@ function ProjectMembersManager({ project, onMembersUpdated, userRole }) {
                 </Table>
             </TableContainer>
 
-            {/* Диалог добавления участника */}
+            {/* добавление участника */}
             <Dialog open={openAddDialog} onClose={handleAddDialogClose} maxWidth="sm" fullWidth>
                 <DialogTitle>Добавить участника</DialogTitle>
                 <DialogContent>
@@ -301,7 +299,7 @@ function ProjectMembersManager({ project, onMembersUpdated, userRole }) {
                 </DialogActions>
             </Dialog>
 
-            {/* Диалог редактирования роли */}
+            {/* редактирование роли */}
             <Dialog open={openEditDialog} onClose={handleEditDialogClose} maxWidth="xs" fullWidth>
                 <DialogTitle>Изменить роль участника</DialogTitle>
                 <DialogContent>

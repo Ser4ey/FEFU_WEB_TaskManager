@@ -35,17 +35,18 @@ export default function TaskForm({ onSubmit, initialData = null, projectId = nul
         }
     }, [initialData, projectId]);
 
+    const loadProjects = async () => {
+        try {
+            const response = await api.projects.getAll();
+            setProjects(response.data);
+            setError(null);
+        } catch (error) {
+            console.error('Ошибка при загрузке проектов:', error);
+            setError('Не удалось загрузить список проектов');
+        }
+    };
+
     useEffect(() => {
-        const loadProjects = async () => {
-            try {
-                const response = await api.projects.getAll();
-                setProjects(response.data);
-                setError(null);
-            } catch (error) {
-                console.error('Ошибка при загрузке проектов:', error);
-                setError('Не удалось загрузить список проектов');
-            }
-        };
         loadProjects();
     }, []);
 
@@ -60,6 +61,10 @@ export default function TaskForm({ onSubmit, initialData = null, projectId = nul
         e.preventDefault();
         if (!formData.project) {
             setError('Выберите проект');
+            return;
+        }
+        if (!formData.deadline) {
+            setError('Выберите дедлайн');
             return;
         }
         const taskData = {
@@ -80,9 +85,14 @@ export default function TaskForm({ onSubmit, initialData = null, projectId = nul
         setError(null);
     };
 
+    const handleOpen = () => {
+        setOpen(true);
+        loadProjects();
+    };
+
     return (
         <>
-            <Button variant="contained" onClick={() => setOpen(true)}>
+            <Button variant="contained" onClick={handleOpen}>
                 {initialData ? 'Редактировать задачу' : 'Создать задачу'}
             </Button>
             <Dialog open={open} onClose={() => {

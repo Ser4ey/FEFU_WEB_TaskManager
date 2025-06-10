@@ -34,9 +34,7 @@ class UserView(APIView):
         return Response(serializer.data)
 
 class UserSearchView(generics.ListAPIView):
-    """
-    Поиск пользователей по имени пользователя для добавления в проект
-    """
+    #Поиск пользователей по имени пользователя для добавления в проект
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = UserSerializer
     
@@ -48,10 +46,10 @@ class UserSearchView(generics.ListAPIView):
             logger.debug("Пустой запрос, возвращаем пустой список")
             return User.objects.none()
             
-        # Фильтруем по запросу и исключаем текущего пользователя
+        #фильтруем по запросу и исключаем текущего пользователя
         queryset = User.objects.filter(username__icontains=query).exclude(id=self.request.user.id)
         
         logger.debug(f"Найдено {queryset.count()} пользователей")
         
-        # Применяем срез после всех фильтров
+        #применяем срез после всех фильтров
         return queryset[:10]

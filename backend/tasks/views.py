@@ -17,7 +17,7 @@ class TaskViewSet(BaseModelViewSet):
         return super().get_permissions()
 
     def get_public_queryset(self):
-        # Только участники проекта могут видеть задачи публичных проектов
+        #только участники проекта могут видеть задачи публичных проектов
         user = self.request.user
         return Task.objects.filter(
             project__is_public=True,
@@ -25,12 +25,12 @@ class TaskViewSet(BaseModelViewSet):
         )
         
     def get_authenticated_queryset(self, user):
-        # Пользователь может видеть задачи только в своих проектах или проектах, где он участник
+        #пользователь может видеть задачи только в своих проектах или проектах, где он участник
         return Task.objects.filter(
             models.Q(project__creator=user) |
             models.Q(project__members=user)
         ).distinct()
         
     def perform_create(self, serializer):
-        # При создании задачи устанавливаем проект, к которому пользователь имеет доступ
+        #при создании задачи устанавливаем проект, к которому пользователь имеет доступ
         serializer.save()
