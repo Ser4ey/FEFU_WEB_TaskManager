@@ -162,6 +162,15 @@ export default function TaskDetail() {
                                 <MenuItem value="completed">Выполнено</MenuItem>
                             </Select>
                         </FormControl>
+                        <TextField
+                            fullWidth
+                            margin="normal"
+                            label="Дедлайн"
+                            type="datetime-local"
+                            value={editData.deadline ? editData.deadline.substring(0, 16) : ''}
+                            onChange={(e) => setEditData({ ...editData, deadline: e.target.value })}
+                            InputLabelProps={{ shrink: true }}
+                        />
                     </Box>
                 ) : (
                     <Box>

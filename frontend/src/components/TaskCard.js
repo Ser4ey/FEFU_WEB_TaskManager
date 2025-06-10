@@ -59,7 +59,7 @@ export function TaskCard({ task, project }) {
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
                             whiteSpace: 'nowrap',
-                            maxWidth: 300 // тут можно поменять сколько симвоолов текста будет отображаться до ...
+                            width: 300 // тут можно поменять сколько симвоолов текста будет отображаться до ...
                         }}
                     >
                         {task.title}
