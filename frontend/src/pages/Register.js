@@ -26,7 +26,19 @@ export default function Register() {
             await api.auth.register(formData);
             navigate('/login');
         } catch (err) {
-            setError(err.response?.data?.message || 'Ошибка при регистрации');
+            let message = err.response?.data?.message || err.response?.data?.detail || 'Ошибка при регистрации';
+            if (message === 'No active account found with the given credentials') {
+                message = 'Неверное имя пользователя или пароль';
+            }
+            if (typeof err.response?.data === 'object' && err.response?.data?.non_field_errors) {
+                if (err.response.data.non_field_errors.includes('Пароли не совпадают')) {
+                    message = 'Пароли не совпадают';
+                }
+            }
+            if (message === 'Пароли не совпадают') {
+                message = 'Пароли не совпадают';
+            }
+            setError(message);
         }
     };
 

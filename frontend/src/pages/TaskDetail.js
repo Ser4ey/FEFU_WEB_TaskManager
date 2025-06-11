@@ -34,6 +34,7 @@ export default function TaskDetail() {
         project: '',
         deadline: ''
     });
+    const [error, setError] = useState(null);
 
     const loadTask = useCallback(async () => {
         try {
@@ -81,7 +82,11 @@ export default function TaskDetail() {
             setTask(response.data);
             setIsEditing(false);
         } catch (error) {
-            console.error('Ошибка при обновлении задачи:', error);
+            let message = error.response?.data?.detail || 'Ошибка при обновлении задачи';
+            if (message === 'No active account found with the given credentials') {
+                message = 'Неверное имя пользователя или пароль';
+            }
+            setError(message);
         }
     };
 
@@ -91,7 +96,11 @@ export default function TaskDetail() {
                 await api.tasks.delete(id);
                 navigate('/');
             } catch (error) {
-                console.error('Ошибка при удалении задачи:', error);
+                let message = error.response?.data?.detail || 'Ошибка при удалении задачи';
+                if (message === 'No active account found with the given credentials') {
+                    message = 'Неверное имя пользователя или пароль';
+                }
+                setError(message);
             }
         }
     };
@@ -162,6 +171,15 @@ export default function TaskDetail() {
                                 <MenuItem value="completed">Выполнено</MenuItem>
                             </Select>
                         </FormControl>
+                        <TextField
+                            fullWidth
+                            margin="normal"
+                            label="Дедлайн"
+                            type="datetime-local"
+                            value={editData.deadline ? editData.deadline.substring(0, 16) : ''}
+                            onChange={(e) => setEditData({ ...editData, deadline: e.target.value })}
+                            InputLabelProps={{ shrink: true }}
+                        />
                     </Box>
                 ) : (
                     <Box>

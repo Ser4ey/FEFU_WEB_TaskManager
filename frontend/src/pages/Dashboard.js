@@ -94,7 +94,7 @@ export default function Dashboard() {
                     <Typography variant="h4">Задачи</Typography>
                     <TaskForm onSubmit={handleCreateTask} />
                 </Box>
-                <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
+                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 5 }}>
                     <ButtonGroup variant="contained">
                         <Button onClick={() => setFilter('all')}>Все</Button>
                         <Button onClick={() => setFilter('low')}>Низкий</Button>
