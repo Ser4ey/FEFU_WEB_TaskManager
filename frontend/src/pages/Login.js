@@ -25,7 +25,11 @@ export default function Login() {
             localStorage.setItem('token', response.data.access);
             navigate('/');
         } catch (err) {
-            setError(err.response?.data?.detail || 'Ошибка при входе');
+            let message = err.response?.data?.detail || 'Ошибка при входе';
+            if (message === 'No active account found with the given credentials') {
+                message = 'Неверное имя пользователя или пароль';
+            }
+            setError(message);
         }
     };
 

@@ -35,6 +35,7 @@ export default function ProjectDetail() {
         description: '',
         is_public: false
     });
+    const [error, setError] = useState('');
 
     const loadProject = useCallback(async () => {
         try {
@@ -83,7 +84,11 @@ export default function ProjectDetail() {
             setProject(response.data);
             setIsEditing(false);
         } catch (error) {
-            console.error('Ошибка при обновлении проекта:', error);
+            let message = error.response?.data?.detail || 'Ошибка при обновлении проекта';
+            if (message === 'No active account found with the given credentials') {
+                message = 'Неверное имя пользователя или пароль';
+            }
+            setError(message);
         }
     };
 
@@ -93,7 +98,11 @@ export default function ProjectDetail() {
                 await api.projects.delete(id);
                 navigate('/');
             } catch (error) {
-                console.error('Ошибка при удалении проекта:', error);
+                let message = error.response?.data?.detail || 'Ошибка при удалении проекта';
+                if (message === 'No active account found with the given credentials') {
+                    message = 'Неверное имя пользователя или пароль';
+                }
+                setError(message);
             }
         }
     };
@@ -106,7 +115,11 @@ export default function ProjectDetail() {
             });
             setTasks([...tasks, response.data]);
         } catch (error) {
-            console.error('Ошибка при создании задачи:', error);
+            let message = error.response?.data?.detail || 'Ошибка при создании задачи';
+            if (message === 'No active account found with the given credentials') {
+                message = 'Неверное имя пользователя или пароль';
+            }
+            setError(message);
         }
     };
 
