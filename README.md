@@ -81,7 +81,16 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
-5. Запустите сервер
+5. Настройте SMTP-сервер. Это нужно для отправки писем с уведомлениями. В папке backend создайте файл .env, добавьте в него следующее:
+```bash
+smtp_host=smtp.gmail.com       # Адрес SMTP-сервера (gmail как пример)
+smtp_port=587                  # Порт
+smtp_user=your_email@gmail.com # Почта
+smtp_password="your_password"  # Пароль или ключ (если Gmail)
+```
+Для своего почтового ящика необходимо уточнить вносимые данные.
+
+6. Запустите сервер
 ```bash
 python manage.py runserver
 ```
